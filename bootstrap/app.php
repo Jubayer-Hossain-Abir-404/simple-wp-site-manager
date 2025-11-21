@@ -25,6 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
             \App\Http\Middleware\XSSProtection::class,
         ]);
+
+        $middleware->web(append: [
+            \App\Http\Middleware\HandleInertiaRequests::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

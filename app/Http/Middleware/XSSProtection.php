@@ -1,0 +1,45 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Middleware;
+
+use Illuminate\Http\Request;
+
+class XSSProtection
+{
+    /**
+     * The following method loops through all request input and strips out all tags from
+     * the request. This to ensure that users are unable to set ANY HTML within the form
+     * submissions, but also cleans up input.
+     *
+     * @param callable $next
+     */
+    public function handle(Request $request, \Closure $next)
+    {
+        if (!in_array(strtolower($request->method()), ['put', 'post'], true)) {
+            return $next($request);
+        }
+
+        $input = $request->all();
+
+        $input = $this->handleStringsRecursively($input);
+
+        $request->merge($input);
+
+        return $next($request);
+    }
+
+    private function handleStringsRecursively(array $input): array
+    {
+        foreach ($input as $key => $value) {
+            if (is_array($value)) {
+                $input[$key] = $this->handleStringsRecursively($value);
+            } elseif (is_string($value)) {
+                $input[$key] = strip_tags($value);
+            }
+        }
+
+        return $input;
+    }
+}

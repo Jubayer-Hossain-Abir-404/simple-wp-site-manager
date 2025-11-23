@@ -8,11 +8,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\WordpressSiteRequest;
 use App\Models\WordpressSite;
 use App\Repositories\WordpressSiteRepository;
+use App\Services\WordpressSiteService;
 use Inertia\Inertia;
 
 class WordpressSiteController extends Controller
 {
-    public function __construct(private WordpressSiteRepository $repository)
+    public function __construct(private WordpressSiteRepository $repository, private WordpressSiteService $service)
     {
     }
 
@@ -42,7 +43,7 @@ class WordpressSiteController extends Controller
     public function store(WordpressSiteRequest $request)
     {
         try {
-            $wordpressSite = WordpressSite::create($request->validated());
+            $wordpressSite = $this->service->save($request);
 
             return redirect()->route('wordpress-sites.index')
                 ->with('success', 'Wordpress site created successfully!');

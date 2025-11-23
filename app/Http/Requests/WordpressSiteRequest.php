@@ -39,6 +39,7 @@ class WordpressSiteRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                'unique:wordpress_sites,domain',
                 'regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
             ],
             'server_ip' => [
@@ -74,115 +75,42 @@ class WordpressSiteRequest extends FormRequest
 
     public function updateRules(): array
     {
-        $countryId = $this->country_id;
-        $payloadStatus = $this->post('status');
-
-        $rules = [
+        return [
             'name' => [
                 'string',
                 'min:2',
                 'max:255',
-                function ($attribute, $value, $fail) {
-                    if (is_string($value)
-                    && preg_match('/<[^>]*script.*?>.*?<\/[^>]*script.*?>/i', $value)) {
-                        $fail("The $attribute content is not allowed.");
-                    }
-                },
             ],
-            'description' => [
-                'nullable',
+            'domain' => [
                 'string',
-                'min:3',
-                'max:750',
-                function ($attribute, $value, $fail) {
-                    if (is_string($value)
-                    && preg_match('/<[^>]*script.*?>.*?<\/[^>]*script.*?>/i', $value)) {
-                        $fail("The $attribute content is not allowed.");
-                    }
-                },
-            ],
-            'country_id' => [
-                'nullable',
-                'integer',
-                Rule::exists('countries', 'id')->where('status', config('common.status.active'))
-                ->whereNull('deleted_at'),
-            ],
-            'region_id' => [
-                'nullable',
-                'integer',
-                function ($attribute, $value, $fail) use ($countryId) {
-                    if (!empty($value)) {
-                        if (empty($countryId)) {
-                            $fail('Country is required when region is provided.');
-                        } else {
-                            $region = Region::select('id')->where('country_id', $countryId)->active()->find($value);
-                            if (empty($region)) {
-                                $fail('The region must be within the selected country.');
-                            }
-                        }
-                    }
-                },
-            ],
-            'address' => [
-                'nullable',
-                'string',
-                'min:3',
                 'max:255',
-                function ($attribute, $value, $fail) {
-                    if (is_string($value)
-                    && preg_match('/<[^>]*script.*?>.*?<\/[^>]*script.*?>/i', $value)) {
-                        $fail("The $attribute content is not allowed.");
-                    }
-                },
+                Rule::unique('wordpress_sites', 'domain')->ignore($this->wordpress_site),
+                'regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
             ],
-            'employee_count' => [
-                'nullable',
-                'integer',
-                'min:0',
+            'server_ip' => [
+                'string',
+                'ipv4',
             ],
-            'survey_limit' => [
+            'ssh_port' => [
                 'integer',
                 'min:1',
+                'max:65535',
             ],
-            'has_admin_login' => [
-                'required',
+            'ssh_user' => [
+                'string',
+                'min:2',
+                'max:255',
+            ],
+            'ssh_password' => [
+                'confirmed',
+                'string',
+                'min:4',
+                'max:255',
+            ],
+            'status' => [
                 'integer',
-                'between:0,1',
-                function ($attribute, $value, $fail) use ($payloadStatus) {
-                    switch ($value) {
-                        case config('common.has_org_admin_login.yes'):
-                            if ($this->organization->status === config('common.status.inactive')
-                                && (is_null($payloadStatus) || $payloadStatus === config('common.status.inactive'))) {
-                                $fail('Organization must be active to create an admin.');
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                },
+                'between:1,4',
             ],
-            'status' => [Rule::in([0, 1])],
         ];
-
-        if ($this->post('has_admin_login')) {
-            $hasAdminLogin = $this->post('has_admin_login');
-            $isAdminUpdate = $this->post('is_admin_update');
-            $adminRules = [];
-
-            switch ($hasAdminLogin && $isAdminUpdate) {
-                case config('common.has_org_admin_login.yes'):
-                    $adminId = $this->organization->admin_id ?? 0;
-                    $adminRules = collect($this->getAdminRequest()->updateRules($adminId))
-                    ->mapWithKeys(fn ($rules, $key) => ["admin.$key" => $rules])
-                    ->toArray();
-                    break;
-                default:
-                    break;
-            }
-
-            $rules = array_merge($rules, $adminRules);
-        }
-
-        return $rules;
     }
 }

@@ -3,9 +3,20 @@ import Pagination from '@/Components/Pagination';
 import StatusBadge from '@/Components/StatusBadge';
 import { Head } from '@inertiajs/react';
 import { Link } from '@inertiajs/react'
+import { router } from '@inertiajs/react';
 
 
 export default function Index({ wordpressSites }) {
+    const deleteWordPressSite = (wordpressSiteId) => {
+        if (confirm('Are you sure you want to delete this Wordpress site?')) {
+            router.delete(`/wordpress-sites/${wordpressSiteId}`), {
+                onError: (errors) => {
+                    console.error(errors);
+                    alert('An error occurred while deleting the Wordpress site.');
+                },
+            };
+        }
+    };
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
             <Head title="Wordpress Sites" />
@@ -15,8 +26,8 @@ export default function Index({ wordpressSites }) {
                     <h2 className="text-2xl font-bold mb-6 text-red-600">Wordpress Site List</h2>
                     <Link href="/wordpress-sites/create" className="bg-violet-500 text-white px-4 py-2 rounded-md">New Wordpress Site</Link>
                 </div>
-                    
-                    {/* Data Table */}
+
+                {/* Data Table */}
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr>
@@ -36,12 +47,9 @@ export default function Index({ wordpressSites }) {
                                         status={wordpressSite.status}
                                     />
                                 </td>
-                                <div className="mt-2 border-b">
+                                <div className="p-3 border-b">
                                     <Link href={`/wordpress-sites/${wordpressSite.id}/edit`} className="mr-2">Edit</Link>
-                                    <form method="POST" action={`/wordpress-sites/${wordpressSite.id}`} onSubmit={(e) => { if (!confirm('Delete?')) e.preventDefault(); }}>
-                                        <input type="hidden" name="_method" value="DELETE" />
-                                        <button type="submit" className="text-red-600">Delete</button>
-                                    </form>
+                                    <button type="submit" className="text-red-600" onClick={() => deleteWordPressSite(wordpressSite.id)}>Delete</button>
                                 </div>
                             </tr>
                         ))}

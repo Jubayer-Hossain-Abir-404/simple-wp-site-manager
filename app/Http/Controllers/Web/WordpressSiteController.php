@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\WordpressSiteRequest;
 use App\Models\WordpressSite;
 use App\Repositories\WordpressSiteRepository;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class WordpressSiteController extends Controller
@@ -64,21 +63,43 @@ class WordpressSiteController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(WordpressSite $wordpressSite)
     {
+        return Inertia::render('WordpressSites/Edit', [
+            'wordpressSite' => $wordpressSite,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(WordpressSiteRequest $request, WordpressSite $wordpressSite)
     {
+        try {
+            $wordpressSite->update($request->validated());
+
+            return redirect()->route('wordpress-sites.index')
+                ->with('success', 'Wordpress site updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to update wordpress site: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(WordpressSite $wordpressSite)
     {
+        try {
+            $wordpressSite->delete();
+
+            return redirect()->route('wordpress-sites.index')
+                ->with('success', 'Wordpress site deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to delete wordpress site: ' . $e->getMessage());
+        }
     }
 }

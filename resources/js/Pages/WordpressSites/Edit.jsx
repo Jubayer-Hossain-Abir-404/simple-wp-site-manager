@@ -4,31 +4,38 @@ import { Head, usePage, router } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import { Status } from '../../Constants/Index';
 
-export default function Create() {
-    const { errors } = usePage().props;
+export default function Edit() {
+    const { wordpressSite, errors } = usePage().props;
 
     const {
         register,
         handleSubmit,
-        formState: { errors: formErrors, isSubmitting },
+        formState: { errors: formErrors, isSubmitting, isDirty },
         setError,
         clearErrors,
     } = useForm({
         defaultValues: {
-            name: '',
-            domain: '',
-            server_ip: '',
-            ssh_port: 22,
-            ssh_user: '',
-            ssh_password: '',
+            name: wordpressSite.name || '',
+            domain: wordpressSite.domain || '',
+            server_ip: wordpressSite.server_ip || '',
+            ssh_port: wordpressSite.ssh_port || 22,
+            ssh_user: wordpressSite.ssh_user || '',
+            ssh_password: '', // Empty for security
             ssh_password_confirmation: '',
-            status: Status.STOPPED,
+            status: wordpressSite.status || Status.STOPPED,
         },
     });
 
     const onSubmit = (data) => {
         clearErrors();
-        router.post('/wordpress-sites', data, {
+
+        const submitData = { ...data };
+        if (!submitData.ssh_password) {
+            delete submitData.ssh_password;
+            delete submitData.ssh_password_confirmation;
+        }
+
+        router.put(`/wordpress-sites/${wordpressSite.id}`, submitData, {
             onError: (errors) => {
                 Object.keys(errors).forEach((key) => {
                     setError(key, { message: errors[key] });
@@ -39,11 +46,11 @@ export default function Create() {
 
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
-            <Head title="Create Wordpress Site" />
+            <Head title={`Edit ${wordpressSite.name}`} />
 
             <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">Create New Wordpress Site</h1>
+                    <h1 className="text-2xl font-bold text-gray-800">Edit Wordpress Site: {wordpressSite.name}</h1>
                     <Link
                         href="/wordpress-sites"
                         className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition duration-200"
@@ -54,6 +61,7 @@ export default function Create() {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Site Name */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Site Name <span className="text-sm text-red-500">*</span>
@@ -164,7 +172,6 @@ export default function Create() {
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="ubuntu"
                             />
-
                             {formErrors.ssh_user && (
                                 <p className="mt-1 text-sm text-red-600">{formErrors.ssh_user.message}</p>
                             )}
@@ -177,13 +184,10 @@ export default function Create() {
                             </label>
                             <input
                                 type="password"
-                                {...register('ssh_password', {
-                                    required: 'SSH password is required',
-                                })}
+                                {...register('ssh_password')}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="SSH password"
+                                placeholder="Leave blank to keep current password"
                             />
-
                             {formErrors.ssh_password && (
                                 <p className="mt-1 text-sm text-red-600">{formErrors.ssh_password.message}</p>
                             )}
@@ -196,13 +200,10 @@ export default function Create() {
                             </label>
                             <input
                                 type="password"
-                                {...register('ssh_password_confirmation', {
-                                    required: 'SSH password confirmation is required',
-                                })}
+                                {...register('ssh_password_confirmation')}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Confirm SSH password"
+                                placeholder="Confirm new password"
                             />
-
                             {formErrors.ssh_password_confirmation && (
                                 <p className="mt-1 text-sm text-red-600">{formErrors.ssh_password_confirmation.message}</p>
                             )}
@@ -219,7 +220,7 @@ export default function Create() {
                         </Link>
                         <button
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || !isDirty}
                             className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-2 rounded-md transition duration-200 flex items-center cursor-pointer"
                         >
                             {isSubmitting ? (
@@ -228,10 +229,10 @@ export default function Create() {
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    Creating...
+                                    Updating...
                                 </>
                             ) : (
-                                'Create Site'
+                                'Update Site'
                             )}
                         </button>
                     </div>

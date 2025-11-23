@@ -1,7 +1,163 @@
 import React$1 from "react";
-import { Link, Head, createInertiaApp } from "@inertiajs/react";
+import { useForm } from "react-hook-form";
+import { usePage, Head, Link, router, createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
 import ReactDOMServer from "react-dom/server";
+const Status = {
+  STOPPED: 1,
+  DEPLOYING: 2,
+  RUNNING: 3,
+  FAILED: 4
+};
+function Create() {
+  const { errors } = usePage().props;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors: formErrors, isSubmitting },
+    setError,
+    clearErrors
+  } = useForm({
+    defaultValues: {
+      name: "",
+      domain: "",
+      server_ip: "",
+      ssh_port: 22,
+      ssh_user: "",
+      ssh_password: "",
+      status: Status.STOPPED
+    }
+  });
+  const onSubmit = (data) => {
+    clearErrors();
+    router.post("/wordpress-sites", data, {
+      onError: (errors2) => {
+        Object.keys(errors2).forEach((key) => {
+          setError(key, { message: errors2[key] });
+        });
+      }
+    });
+  };
+  return /* @__PURE__ */ React$1.createElement("div", { className: "p-6 bg-gray-100 min-h-screen" }, /* @__PURE__ */ React$1.createElement(Head, { title: "Create Wordpress Site" }), /* @__PURE__ */ React$1.createElement("div", { className: "max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6" }, /* @__PURE__ */ React$1.createElement("div", { className: "flex justify-between items-center mb-6" }, /* @__PURE__ */ React$1.createElement("h1", { className: "text-2xl font-bold text-gray-800" }, "Create New Wordpress Site"), /* @__PURE__ */ React$1.createElement(
+    Link,
+    {
+      href: "/wordpress-sites",
+      className: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition duration-200"
+    },
+    "Back to List"
+  )), /* @__PURE__ */ React$1.createElement("form", { onSubmit: handleSubmit(onSubmit), className: "space-y-6" }, /* @__PURE__ */ React$1.createElement("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4" }, /* @__PURE__ */ React$1.createElement("div", null, /* @__PURE__ */ React$1.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "Site Name ", /* @__PURE__ */ React$1.createElement("span", { className: "text-sm text-red-500" }, "*")), /* @__PURE__ */ React$1.createElement(
+    "input",
+    {
+      type: "text",
+      ...register("name", {
+        required: "Site name is required",
+        minLength: {
+          value: 2,
+          message: "Site name must be at least 2 characters"
+        },
+        maxLength: {
+          value: 255,
+          message: "Site name must be at most 255 characters"
+        }
+      }),
+      className: `w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.name ? "border-red-500" : "border-gray-300"}`,
+      placeholder: "Enter site name"
+    }
+  ), formErrors.name && /* @__PURE__ */ React$1.createElement("p", { className: "mt-1 text-sm text-red-600" }, formErrors.name.message)), /* @__PURE__ */ React$1.createElement("div", null, /* @__PURE__ */ React$1.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "Domain ", /* @__PURE__ */ React$1.createElement("span", { className: "text-sm text-red-500" }, "*")), /* @__PURE__ */ React$1.createElement(
+    "input",
+    {
+      type: "text",
+      ...register("domain", {
+        required: "Domain is required",
+        pattern: {
+          value: /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/,
+          message: "Please enter a valid domain"
+        }
+      }),
+      className: `w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.domain ? "border-red-500" : "border-gray-300"}`,
+      placeholder: "https://example.com"
+    }
+  ), formErrors.domain && /* @__PURE__ */ React$1.createElement("p", { className: "mt-1 text-sm text-red-600" }, formErrors.domain.message)), /* @__PURE__ */ React$1.createElement("div", null, /* @__PURE__ */ React$1.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "Server IP ", /* @__PURE__ */ React$1.createElement("span", { className: "text-sm text-red-500" }, "*")), /* @__PURE__ */ React$1.createElement(
+    "input",
+    {
+      type: "text",
+      ...register("server_ip", {
+        required: "Server IP is required",
+        pattern: {
+          value: /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/,
+          message: "Please enter a valid IP address"
+        }
+      }),
+      className: `w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.server_ip ? "border-red-500" : "border-gray-300"}`,
+      placeholder: "192.168.1.100"
+    }
+  ), formErrors.server_ip && /* @__PURE__ */ React$1.createElement("p", { className: "mt-1 text-sm text-red-600" }, formErrors.server_ip.message)), /* @__PURE__ */ React$1.createElement("div", null, /* @__PURE__ */ React$1.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "SSH Port"), /* @__PURE__ */ React$1.createElement(
+    "input",
+    {
+      type: "number",
+      ...register("ssh_port", {
+        required: "SSH port is required",
+        min: { value: 1, message: "SSH port must be greater than 0" },
+        max: { value: 65535, message: "SSH port must be less than 65536" }
+      }),
+      className: `w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.ssh_port ? "border-red-500" : "border-gray-300"}`,
+      placeholder: "22"
+    }
+  ), formErrors.ssh_port && /* @__PURE__ */ React$1.createElement("p", { className: "mt-1 text-sm text-red-600" }, formErrors.ssh_port.message)), /* @__PURE__ */ React$1.createElement("div", null, /* @__PURE__ */ React$1.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "SSH User"), /* @__PURE__ */ React$1.createElement(
+    "input",
+    {
+      type: "text",
+      ...register("ssh_user", {
+        required: "SSH user is required",
+        maxLength: {
+          value: 255,
+          message: "SSH user must be at most 255 characters"
+        }
+      }),
+      className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500",
+      placeholder: "ubuntu"
+    }
+  ), formErrors.ssh_user && /* @__PURE__ */ React$1.createElement("p", { className: "mt-1 text-sm text-red-600" }, formErrors.ssh_user.message)), /* @__PURE__ */ React$1.createElement("div", null, /* @__PURE__ */ React$1.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "SSH Password"), /* @__PURE__ */ React$1.createElement(
+    "input",
+    {
+      type: "password",
+      ...register("ssh_password", {
+        required: "SSH password is required"
+      }),
+      className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500",
+      placeholder: "SSH password"
+    }
+  ), formErrors.ssh_password && /* @__PURE__ */ React$1.createElement("p", { className: "mt-1 text-sm text-red-600" }, formErrors.ssh_password.message)), /* @__PURE__ */ React$1.createElement("div", null, /* @__PURE__ */ React$1.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "Confirm SSH Password"), /* @__PURE__ */ React$1.createElement(
+    "input",
+    {
+      type: "password",
+      ...register("ssh_password_confirmation", {
+        required: "SSH password confirmation is required"
+      }),
+      className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500",
+      placeholder: "Confirm SSH password"
+    }
+  ), formErrors.ssh_password_confirmation && /* @__PURE__ */ React$1.createElement("p", { className: "mt-1 text-sm text-red-600" }, formErrors.ssh_password_confirmation.message))), /* @__PURE__ */ React$1.createElement("div", { className: "flex justify-end space-x-3 pt-4" }, /* @__PURE__ */ React$1.createElement(
+    Link,
+    {
+      href: "/wordpress-sites",
+      className: "bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md transition duration-200"
+    },
+    "Cancel"
+  ), /* @__PURE__ */ React$1.createElement(
+    "button",
+    {
+      type: "submit",
+      disabled: isSubmitting,
+      className: "bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-2 rounded-md transition duration-200 flex items-center"
+    },
+    isSubmitting ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, /* @__PURE__ */ React$1.createElement("svg", { className: "animate-spin -ml-1 mr-3 h-5 w-5 text-white", xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24" }, /* @__PURE__ */ React$1.createElement("circle", { className: "opacity-25", cx: "12", cy: "12", r: "10", stroke: "currentColor", strokeWidth: "4" }), /* @__PURE__ */ React$1.createElement("path", { className: "opacity-75", fill: "currentColor", d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" })), "Creating...") : "Create Site"
+  )), errors && Object.keys(errors).length > 0 && /* @__PURE__ */ React$1.createElement("div", { className: "bg-red-50 border border-red-200 rounded-md p-4" }, /* @__PURE__ */ React$1.createElement("h3", { className: "text-red-800 font-medium mb-2" }, "Please fix the following errors:"), /* @__PURE__ */ React$1.createElement("ul", { className: "list-disc list-inside text-red-700 text-sm" }, Object.entries(errors).map(([key, error]) => /* @__PURE__ */ React$1.createElement("li", { key }, error)))))));
+}
+const __vite_glob_0_0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: Create
+}, Symbol.toStringTag, { value: "Module" }));
 function Pagination({ links }) {
   return /* @__PURE__ */ React$1.createElement("nav", { className: "text-center mt-4" }, links.map((link) => /* @__PURE__ */ React$1.createElement(
     Link,
@@ -14,12 +170,6 @@ function Pagination({ links }) {
     }
   )));
 }
-const Status = {
-  STOPPED: 1,
-  DEPLOYING: 2,
-  RUNNING: 3,
-  FAILED: 4
-};
 const getStatusLabel = (status) => {
   switch (status) {
     case Status.STOPPED:
@@ -59,7 +209,7 @@ function Index({ wordpressSites }) {
     if (!confirm("Delete?")) e.preventDefault();
   } }, /* @__PURE__ */ React$1.createElement("input", { type: "hidden", name: "_method", value: "DELETE" }), /* @__PURE__ */ React$1.createElement("button", { type: "submit", className: "text-red-600" }, "Delete"))))))), /* @__PURE__ */ React$1.createElement("div", { className: "mt-6" }, /* @__PURE__ */ React$1.createElement(Pagination, { links: wordpressSites.links }))));
 }
-const __vite_glob_0_0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const __vite_glob_0_1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Index
 }, Symbol.toStringTag, { value: "Module" }));
@@ -68,7 +218,7 @@ createServer(
     page,
     render: ReactDOMServer.renderToString,
     resolve: (name) => {
-      const pages = /* @__PURE__ */ Object.assign({ "./Pages/WordpressSites/Index.jsx": __vite_glob_0_0 });
+      const pages = /* @__PURE__ */ Object.assign({ "./Pages/WordpressSites/Create.jsx": __vite_glob_0_0, "./Pages/WordpressSites/Index.jsx": __vite_glob_0_1 });
       return pages[`./Pages/${name}.jsx`];
     },
     setup: ({ App, props }) => {

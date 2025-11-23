@@ -3,6 +3,7 @@
   "resources/js/Components/StatusBadge.jsx": [],
   "resources/js/Constants/Index.js": [],
   "resources/js/Helpers/Common.js": [],
+  "resources/js/Pages/WordpressSites/Create.jsx": [],
   "resources/js/Pages/WordpressSites/Index.jsx": [],
   "resources/js/ssr.jsx": []
 }

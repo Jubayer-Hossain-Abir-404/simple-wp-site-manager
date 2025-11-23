@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WordpressSiteRequest;
 use App\Models\WordpressSite;
+use App\Repositories\WordpressSiteRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Repositories\WordpressSiteRepository;
 
 class WordpressSiteController extends Controller
 {
@@ -39,8 +40,18 @@ class WordpressSiteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(WordpressSiteRequest $request)
     {
+        try {
+            $wordpressSite = WordpressSite::create($request->validated());
+
+            return redirect()->route('wordpress-sites.index')
+                ->with('success', 'Wordpress site created successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to create wordpress site: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**

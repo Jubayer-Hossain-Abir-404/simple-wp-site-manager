@@ -25,6 +25,6 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        WordpressSite::factory(2)->create();
+        WordpressSite::factory(30)->create();
     }
 }

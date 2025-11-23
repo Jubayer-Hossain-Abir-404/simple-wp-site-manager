@@ -8,16 +8,20 @@ use App\Http\Controllers\Controller;
 use App\Models\WordpressSite;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Repositories\WordpressSiteRepository;
 
 class WordpressSiteController extends Controller
 {
+    public function __construct(private WordpressSiteRepository $repository)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $wordpressSites = WordpressSite::latest()
-            ->paginate(10);
+        $wordpressSites = $this->repository->paginate();
 
         return Inertia::render('WordpressSites/Index', [
             'wordpressSites' => $wordpressSites,
@@ -29,6 +33,7 @@ class WordpressSiteController extends Controller
      */
     public function create()
     {
+        return Inertia::render('WordpressSites/Create');
     }
 
     /**

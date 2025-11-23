@@ -9,4 +9,5 @@ return [
         'running' => 3,
         'failed' => 4,
     ],
+    'pagi_limit' => 10,
 ];

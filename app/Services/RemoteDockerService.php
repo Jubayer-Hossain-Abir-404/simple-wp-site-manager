@@ -119,4 +119,27 @@ YML;
             throw $e;
         }
     }
+
+    public function remove(array $wordpressSite)
+    {
+        try {
+            $ssh = $this->connect($wordpressSite);
+            $dir = $this->siteDir($wordpressSite);
+
+            // stop and remove
+            $out = $ssh->exec("cd {$dir} && docker compose down --volumes --remove-orphans 2>&1");
+
+            // remove dir
+            $ssh->exec("rm -rf {$dir}");
+
+            // check for errors
+            if (str_contains(strtolower($out), 'error')) {
+                throw new \Exception('Docker compose removal failed: ' . $out);
+            }
+
+            return $out;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
 }

@@ -94,7 +94,7 @@ class WordpressSiteController extends Controller
     public function destroy(WordpressSite $wordpressSite)
     {
         try {
-            $wordpressSite->delete();
+            $this->service->delete($wordpressSite);
 
             return redirect()->route('wordpress-sites.index')
                 ->with('success', 'Wordpress site deleted successfully!');

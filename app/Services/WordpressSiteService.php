@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Http\Requests\WordpressSiteRequest;
+use App\Jobs\DeleteDockerServerJob;
 use App\Jobs\DeployDockerServerJob;
 use App\Jobs\StopDockerServerJob;
 use App\Models\WordpressSite;
@@ -20,6 +21,15 @@ class WordpressSiteService
         $wordpressSite->fill($data)->save();
 
         dispatch(new DeployDockerServerJob($wordpressSite->toArray()));
+
+        return $wordpressSite;
+    }
+
+    public function delete(WordpressSite $wordpressSite): WordpressSite
+    {
+        dispatch(new DeleteDockerServerJob($wordpressSite->toArray()));
+
+        $wordpressSite->delete();
 
         return $wordpressSite;
     }

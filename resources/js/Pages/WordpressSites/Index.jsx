@@ -4,6 +4,7 @@ import StatusBadge from '@/Components/StatusBadge';
 import { Head } from '@inertiajs/react';
 import { Link } from '@inertiajs/react'
 import { router } from '@inertiajs/react';
+import { Status } from '../../Constants/Index';
 
 
 export default function Index({ wordpressSites }) {
@@ -17,6 +18,19 @@ export default function Index({ wordpressSites }) {
             };
         }
     };
+
+    const stopWordPressSite = (wordpressSiteId) => {
+        if (confirm('Are you sure you want to stop this Wordpress site container?')) {
+            router.post(`/wordpress-sites/${wordpressSiteId}/stop`), {
+                onError: (errors) => {
+                    console.error(errors);
+                    alert('An error occurred while stopping the Wordpress site container.');
+                },
+            };
+        }
+    };
+
+
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
             <Head title="Wordpress Sites" />
@@ -47,9 +61,14 @@ export default function Index({ wordpressSites }) {
                                         status={wordpressSite.status}
                                     />
                                 </td>
-                                <div className="p-3 border-b">
-                                    <Link href={`/wordpress-sites/${wordpressSite.id}/edit`} className="mr-2">Edit</Link>
-                                    <button type="submit" className="text-red-600" onClick={() => deleteWordPressSite(wordpressSite.id)}>Delete</button>
+                                <div className="p-3 border-b flex space-x-4">
+                                    {
+                                        wordpressSite.status === Status.RUNNING && (
+                                            <button type="submit" className="text-red-600 bg-red-100 px-2 py-1 rounded cursor-pointer" onClick={() => stopWordPressSite(wordpressSite.id)}>Stop Container</button>
+                                        )
+                                    }
+                                    <Link href={`/wordpress-sites/${wordpressSite.id}/edit`} className="mr-2 bg-blue-100 px-2 py-1 rounded">Edit</Link>
+                                    <button type="submit" className="text-red-600 bg-red-100 px-2 py-1 rounded cursor-pointer" onClick={() => deleteWordPressSite(wordpressSite.id)}>Delete</button>
                                 </div>
                             </tr>
                         ))}

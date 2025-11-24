@@ -103,4 +103,17 @@ class WordpressSiteController extends Controller
                 ->with('error', 'Failed to delete wordpress site: ' . $e->getMessage());
         }
     }
+
+    public function stopContainer(WordpressSite $wordpressSite)
+    {
+        try {
+            $this->service->stopContainer($wordpressSite);
+
+            return redirect()->route('wordpress-sites.index')
+                ->with('success', 'Wordpress site container stopping initiated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to stop wordpress site container: ' . $e->getMessage());
+        }
+    }
 }

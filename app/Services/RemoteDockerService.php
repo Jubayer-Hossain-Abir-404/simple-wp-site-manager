@@ -99,4 +99,24 @@ YML;
             throw $e;
         }
     }
+
+    public function stop(array $wordpressSite)
+    {
+        try {
+            $ssh = $this->connect($wordpressSite);
+            $dir = $this->siteDir($wordpressSite);
+
+            // stop compose
+            $out = $ssh->exec("cd {$dir} && docker compose down 2>&1");
+
+            // check for errors
+            if (str_contains(strtolower($out), 'error')) {
+                throw new \Exception('Docker compose stop failed: ' . $out);
+            }
+
+            return $out;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
 }

@@ -3,4 +3,5 @@ export const Status = {
   DEPLOYING: 2,
   RUNNING: 3,
   FAILED: 4,
+  STOPPING: 5,
 }

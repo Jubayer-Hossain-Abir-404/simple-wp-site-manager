@@ -8,6 +8,7 @@ return [
         'deploying' => 2,
         'running' => 3,
         'failed' => 4,
+        'stopping' => 5,
     ],
     'pagi_limit' => 10,
 ];

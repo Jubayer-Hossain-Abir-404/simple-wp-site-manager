@@ -7,7 +7,8 @@ const Status = {
   STOPPED: 1,
   DEPLOYING: 2,
   RUNNING: 3,
-  FAILED: 4
+  FAILED: 4,
+  STOPPING: 5
 };
 function Create() {
   const { errors } = usePage().props;
@@ -333,6 +334,8 @@ const getStatusLabel = (status) => {
       return "running";
     case Status.FAILED:
       return "failed";
+    case Status.STOPPING:
+      return "stopping";
     default:
       return "unknown";
   }
@@ -343,6 +346,7 @@ const getStatusStyles = (label) => {
     deploying: "bg-blue-100 text-blue-800 border-blue-200 animate-pulse",
     running: "bg-green-100 text-green-800 border-green-200",
     failed: "bg-red-100 text-red-800 border-red-200",
+    stopping: "bg-yellow-100 text-yellow-800 border-yellow-200",
     unknown: "bg-gray-100 text-gray-500 border-gray-200"
   };
   return styles[label] || styles.unknown;
@@ -358,12 +362,17 @@ function Index({ wordpressSites }) {
       router.delete(`/wordpress-sites/${wordpressSiteId}`);
     }
   };
+  const stopWordPressSite = (wordpressSiteId) => {
+    if (confirm("Are you sure you want to stop this Wordpress site container?")) {
+      router.post(`/wordpress-sites/${wordpressSiteId}/stop`);
+    }
+  };
   return /* @__PURE__ */ React$1.createElement("div", { className: "p-6 bg-gray-100 min-h-screen" }, /* @__PURE__ */ React$1.createElement(Head, { title: "Wordpress Sites" }), /* @__PURE__ */ React$1.createElement("div", { className: "max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6" }, /* @__PURE__ */ React$1.createElement("div", { className: "flex justify-between items-center mb-4" }, /* @__PURE__ */ React$1.createElement("h2", { className: "text-2xl font-bold mb-6 text-red-600" }, "Wordpress Site List"), /* @__PURE__ */ React$1.createElement(Link, { href: "/wordpress-sites/create", className: "bg-violet-500 text-white px-4 py-2 rounded-md" }, "New Wordpress Site")), /* @__PURE__ */ React$1.createElement("table", { className: "w-full text-left border-collapse" }, /* @__PURE__ */ React$1.createElement("thead", null, /* @__PURE__ */ React$1.createElement("tr", null, /* @__PURE__ */ React$1.createElement("th", { className: "p-3 border-b" }, "Name"), /* @__PURE__ */ React$1.createElement("th", { className: "p-3 border-b" }, "Domain"), /* @__PURE__ */ React$1.createElement("th", { className: "p-3 border-b" }, "Status"), /* @__PURE__ */ React$1.createElement("th", { className: "p-3 border-b" }, "Actions"))), /* @__PURE__ */ React$1.createElement("tbody", null, wordpressSites.data.map((wordpressSite) => /* @__PURE__ */ React$1.createElement("tr", { key: wordpressSite.id, className: "hover:bg-gray-50" }, /* @__PURE__ */ React$1.createElement("td", { className: "p-3 border-b" }, wordpressSite.name), /* @__PURE__ */ React$1.createElement("td", { className: "p-3 border-b" }, wordpressSite.domain), /* @__PURE__ */ React$1.createElement("td", { className: "p-3 border-b" }, /* @__PURE__ */ React$1.createElement(
     StatusBadge,
     {
       status: wordpressSite.status
     }
-  )), /* @__PURE__ */ React$1.createElement("div", { className: "p-3 border-b" }, /* @__PURE__ */ React$1.createElement(Link, { href: `/wordpress-sites/${wordpressSite.id}/edit`, className: "mr-2" }, "Edit"), /* @__PURE__ */ React$1.createElement("button", { type: "submit", className: "text-red-600", onClick: () => deleteWordPressSite(wordpressSite.id) }, "Delete")))))), /* @__PURE__ */ React$1.createElement("div", { className: "mt-6" }, /* @__PURE__ */ React$1.createElement(Pagination, { links: wordpressSites.links }))));
+  )), /* @__PURE__ */ React$1.createElement("div", { className: "p-3 border-b flex space-x-4" }, wordpressSite.status === Status.RUNNING && /* @__PURE__ */ React$1.createElement("button", { type: "submit", className: "text-red-600 bg-red-100 px-2 py-1 rounded cursor-pointer", onClick: () => stopWordPressSite(wordpressSite.id) }, "Stop Container"), /* @__PURE__ */ React$1.createElement(Link, { href: `/wordpress-sites/${wordpressSite.id}/edit`, className: "mr-2 bg-blue-100 px-2 py-1 rounded" }, "Edit"), /* @__PURE__ */ React$1.createElement("button", { type: "submit", className: "text-red-600 bg-red-100 px-2 py-1 rounded cursor-pointer", onClick: () => deleteWordPressSite(wordpressSite.id) }, "Delete")))))), /* @__PURE__ */ React$1.createElement("div", { className: "mt-6" }, /* @__PURE__ */ React$1.createElement(Pagination, { links: wordpressSites.links }))));
 }
 const __vite_glob_0_2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,

@@ -93,7 +93,7 @@ DB_PASSWORD=your_password
 Run migrations
 php artisan migrate
 
-Run Seeder
+Run Seeder (Factory Seeding)
 php artisan db:seed
 
 Additional
@@ -128,21 +128,22 @@ SSH Server Installation
 Ubuntu/Debian
 
 sudo apt update
+
 sudo apt install openssh-server
+
 sudo systemctl enable ssh
+
 sudo systemctl start ssh
 
 Configure firewall
 
 sudo ufw allow ssh
+
 Docker Requirements
 
 Need Docker & Docker Compose Setup
 
 ## Wordpress-site-management
-
-Factory Seeding
-php artisan db:seed
 
 CRUD Operations
 Access WordPress sites management via:
@@ -154,8 +155,7 @@ POST /wordpress-sites/{wordpressSite}/stop
 
 ## SSH-docker-logic
 
-Connection Process
-The RemoteDockerService handles SSH connections using phpseclib:
+Connection Process - The RemoteDockerService handles SSH connections using phpseclib
 
 SSH Authentication - Connects to remote server using stored credentials
 
@@ -165,8 +165,9 @@ Docker Compose Setup - Generates and deploys docker-compose.yml
 
 Container Management - Starts/stops WordPress and MariaDB containers
 
-Instruction
-SSH requires permission to run Docker
+Instruction - SSH requires permission to run Docker
+
+sudo usermod -aG docker <username>
 
 ## Docker-compose-structure
 

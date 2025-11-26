@@ -1,59 +1,211 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## WordPress Site Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel application designed to provision, manage, and monitor Dockerized WordPress instances on remote servers via SSH. It utilizes a hybrid stack with Inertia.js and handles remote container orchestration using phpseclib.
 
-## About Laravel
+## Table of Contents
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [Features](#features)
+- [Requirement](#requirement)
+- [Installation](#installation)
+- [Remote Server Setup](#remote-server-setup)
+- [Wordpress Site Management](#wordpress-site-management)
+- [SSH & Docker Logic](#ssh-docker-logic)
+- [Docker Compose Structure](#docker-compose-structure)
+- [Monitoring System](#monitoring-system)
+- [Setup Monitoring](#setup-monitoring)
+- [Queue Processing](#queue-processing)
+- [Security Notes](#Security-notes)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Remote WordPress site deployment using Docker Compose
 
-## Learning Laravel
+Real-time site status monitoring
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+CRUD operations for WordPress sites
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Automated health checks via cron jobs
 
-## Laravel Sponsors
+Queue-based background processing
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Requirement
 
-### Premium Partners
+System Requirements
+Ubuntu 24.04 or WSL 2 (Windows Subsystem for Linux)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+PHP 8.2+
 
-## Contributing
+Composer 2.7.6+
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Node.js 18+ and npm
 
-## Code of Conduct
+SSH Server on target deployment servers
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Laravel Packages
 
-## Security Vulnerabilities
+inertiajs/inertia-laravel - Frontend React integration
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+laravel/telescope - Debugging and development insights
 
-## License
+phpseclib/phpseclib - SSH2 connectivity for remote operations
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+friendsofphp/php-cs-fixer - PHP code style fixing
+
+## Installation
+
+1. Clone and Setup
+bash
+git clone git@github.com:Jubayer-Hossain-Abir-404/simple-wp-site-manager.git
+cd wordpress-site-manager
+
+# Install PHP dependencies
+composer install
+
+# Install Node.js dependencies
+npm install
+
+# Install MySQL dependencies
+
+# Environment setup
+cp .env.example .env
+php artisan key:generate
+
+2. Database Configuration
+
+# Update .env with database credentials
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=wordpress_manager
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
+# Run migrations
+php artisan migrate
+
+# Run Seeder
+php artisan db:seed
+
+# Additional
+Can take the project MySQL Zip file. Can Unzip and use this file.
+
+3. Development Build
+
+# Start Laravel development server
+php artisan serve
+
+# Start Vite dev server (for frontend assets)
+npm run dev
+
+# Production build
+npm run build
+
+4. DB Info
+
+'status' (Status column enum info) => [
+    'stopped' => 1,
+    'deploying' => 2,
+    'running' => 3,
+    'failed' => 4,
+    'stopping' => 5,
+],
+
+
+
+## Remote-server-setup
+
+SSH Server Installation
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install openssh-server
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+# Configure firewall
+sudo ufw allow ssh
+Docker Requirements
+
+# Need Docker & Docker Compose Setup
+
+## wordpress-site-management
+
+Factory Seeding
+php artisan db:seed
+
+CRUD Operations
+Access WordPress sites management via:
+http://localhost:8000/wordpress-sites
+
+Stop Specific Container
+
+POST /wordpress-sites/{wordpressSite}/stop
+
+## Ssh-docker-logic
+
+Connection Process
+The RemoteDockerService handles SSH connections using phpseclib:
+
+SSH Authentication - Connects to remote server using stored credentials
+
+Directory Creation - Creates isolated directory per domain
+
+Docker Compose Setup - Generates and deploys docker-compose.yml
+
+Container Management - Starts/stops WordPress and MariaDB containers
+
+Instruction
+SSH requires permission to run Docker
+
+## Docker-compose-structure
+
+Each site gets:
+
+MariaDB 10.6 - Database with unique credentials
+
+WordPress Latest - WordPress instance with volume persistence
+
+Virtual Host - Domain-based routing setup
+
+## Monitoring-system
+
+Bash Monitor Script (Script can be found project root bash file)
+The docker-monitor.sh script
+
+Runs every 5 minutes via cron
+
+Checks container health status
+
+Sends webhook updates to project
+
+Logs activities to /var/log/docker-monitor.log
+
+## Setup-monitoring
+
+# Create monitor script
+sudo nano /usr/local/bin/docker-monitor.sh
+# Paste the bash script content (from project bash file)
+
+# Make executable
+sudo chmod +x /usr/local/bin/docker-monitor.sh
+
+# Setup cron job (run as root)
+sudo crontab -e
+# Add: */5 * * * * /usr/local/bin/docker-monitor.sh
+
+## Queue-processing
+Run queue worker for background jobs
+
+php artisan queue:work
+
+Job Types
+Site deployment operations
+
+Stop container
+
+Delete container
+
+## Security-notes
+
+Store SSH credentials securely using Laravel encryption
+

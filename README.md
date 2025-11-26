@@ -7,6 +7,9 @@ A Laravel application designed to provision, manage, and monitor Dockerized Word
 - [Features](#features)
 - [Requirement](#requirement)
 - [Installation](#installation)
+- [Environment Setup](#environment-setup)
+- [DB Migrations and Seeder](#db-migrations-seeder)
+- [Development Build](#development-build)
 - [Remote Server Setup](#remote-server-setup)
 - [Wordpress Site Management](#wordpress-site-management)
 - [SSH & Docker Logic](#ssh-docker-logic)
@@ -66,7 +69,8 @@ composer install
 Install Node.js dependencies
 npm install
 
-Environment setup
+## Environment-setup
+
 cp .env.example .env
 
 php artisan key:generate
@@ -84,6 +88,8 @@ DB_USERNAME=your_username
 
 DB_PASSWORD=your_password
 
+## DB-migrations-seeder
+
 Run migrations
 php artisan migrate
 
@@ -93,7 +99,7 @@ php artisan db:seed
 Additional
 Can take the project MySQL Zip file. Can Unzip and use this file.
 
-Development Build
+## Development-build
 
 Start Laravel development server
 php artisan serve

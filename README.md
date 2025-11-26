@@ -188,13 +188,16 @@ Logs activities to /var/log/docker-monitor.log
 ## Setup-monitoring
 
 Create monitor script
+
 sudo nano /usr/local/bin/docker-monitor.sh
 Paste the bash script content (from project bash file)
 
 Make executable
+
 sudo chmod +x /usr/local/bin/docker-monitor.sh
 
 Setup cron job (run as root)
+
 sudo crontab -e
 
 Add: */5 * * * * /usr/local/bin/docker-monitor.sh

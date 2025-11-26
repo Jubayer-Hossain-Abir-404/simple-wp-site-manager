@@ -54,23 +54,24 @@ friendsofphp/php-cs-fixer - PHP code style fixing
 
 ## Installation
 
-1. Clone and Setup
-bash
+Clone and Setup
+
 git clone git@github.com:Jubayer-Hossain-Abir-404/simple-wp-site-manager.git
+
 cd wordpress-site-manager
 
-# Install PHP dependencies
+Install PHP dependencies
 composer install
 
-# Install Node.js dependencies
+Install Node.js dependencies
 npm install
 
-# Environment setup
+Environment setup
 cp .env.example .env
 
 php artisan key:generate
 
-# Update .env with database credentials
+Update .env with database credentials
 DB_CONNECTION=mysql
 
 DB_HOST=127.0.0.1
@@ -83,24 +84,24 @@ DB_USERNAME=your_username
 
 DB_PASSWORD=your_password
 
-# Run migrations
+Run migrations
 php artisan migrate
 
-# Run Seeder
+Run Seeder
 php artisan db:seed
 
-# Additional
+Additional
 Can take the project MySQL Zip file. Can Unzip and use this file.
 
 # Development Build
 
-# Start Laravel development server
+Start Laravel development server
 php artisan serve
 
-# Start Vite dev server (for frontend assets)
+Start Vite dev server (for frontend assets)
 npm run dev
 
-# Production build
+Frontend build
 npm run build
 
 ## DB-info
@@ -118,17 +119,19 @@ Status column enum info
 
 SSH Server Installation
 
-# Ubuntu/Debian
+Ubuntu/Debian
+
 sudo apt update
 sudo apt install openssh-server
 sudo systemctl enable ssh
 sudo systemctl start ssh
 
-# Configure firewall
+Configure firewall
+
 sudo ufw allow ssh
 Docker Requirements
 
-# Need Docker & Docker Compose Setup
+Need Docker & Docker Compose Setup
 
 ## wordpress-site-management
 
@@ -143,7 +146,7 @@ Stop Specific Container
 
 POST /wordpress-sites/{wordpressSite}/stop
 
-## Ssh-docker-logic
+## SSH-docker-logic
 
 Connection Process
 The RemoteDockerService handles SSH connections using phpseclib:
@@ -184,14 +187,14 @@ Logs activities to /var/log/docker-monitor.log
 
 ## Setup-monitoring
 
-# Create monitor script
+Create monitor script
 sudo nano /usr/local/bin/docker-monitor.sh
-# Paste the bash script content (from project bash file)
+Paste the bash script content (from project bash file)
 
-# Make executable
+Make executable
 sudo chmod +x /usr/local/bin/docker-monitor.sh
 
-# Setup cron job (run as root)
+Setup cron job (run as root)
 sudo crontab -e
 # Add: */5 * * * * /usr/local/bin/docker-monitor.sh
 

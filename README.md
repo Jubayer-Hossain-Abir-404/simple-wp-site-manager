@@ -93,7 +93,7 @@ php artisan db:seed
 Additional
 Can take the project MySQL Zip file. Can Unzip and use this file.
 
-# Development Build
+Development Build
 
 Start Laravel development server
 php artisan serve
@@ -104,7 +104,7 @@ npm run dev
 Frontend build
 npm run build
 
-## DB-info
+## DB-Info
 
 Status column enum info
 'status' => [

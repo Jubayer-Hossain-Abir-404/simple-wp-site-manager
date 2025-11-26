@@ -212,7 +212,7 @@ Add: */5 * * * * /usr/local/bin/docker-monitor.sh
 ## Queue-processing
 Run queue worker for background jobs
 
-## DB run background prcessing
+## DB run background processing
 php artisan queue:work
 
 Job Types

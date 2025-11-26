@@ -196,7 +196,8 @@ sudo chmod +x /usr/local/bin/docker-monitor.sh
 
 Setup cron job (run as root)
 sudo crontab -e
-# Add: */5 * * * * /usr/local/bin/docker-monitor.sh
+
+Add: */5 * * * * /usr/local/bin/docker-monitor.sh
 
 ## Queue-processing
 Run queue worker for background jobs

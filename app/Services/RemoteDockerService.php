@@ -23,19 +23,11 @@ class RemoteDockerService
         return $ssh;
     }
 
-    protected function siteDir(array $wordpressSite)
-    {
-        $slug = Str::slug($wordpressSite['domain']);
-
-        return $slug;
-    }
-
     protected function dockerComposeYml(array $wordpressSite)
     {
         $dbName = 'wp_' . Str::random(8);
         $dbUser = 'wpuser';
         $dbPass = Str::random(16);
-        $wpPort = 80;
         $domain = $wordpressSite['domain'];
 
         return <<<YML
@@ -76,7 +68,7 @@ YML;
     {
         try {
             $ssh = $this->connect($wordpressSite);
-            $dir = $this->siteDir($wordpressSite);
+            $dir = $wordpressSite['domain'];
             // make dir
             $ssh->exec("mkdir -p {$dir}");
 
@@ -104,7 +96,7 @@ YML;
     {
         try {
             $ssh = $this->connect($wordpressSite);
-            $dir = $this->siteDir($wordpressSite);
+            $dir = $wordpressSite['domain'];
 
             // stop compose
             $out = $ssh->exec("cd {$dir} && docker compose down 2>&1");
@@ -124,7 +116,7 @@ YML;
     {
         try {
             $ssh = $this->connect($wordpressSite);
-            $dir = $this->siteDir($wordpressSite);
+            $dir = $wordpressSite['domain'];
 
             // stop and remove
             $out = $ssh->exec("cd {$dir} && docker compose down --volumes --remove-orphans 2>&1");

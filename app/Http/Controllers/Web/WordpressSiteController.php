@@ -43,7 +43,7 @@ class WordpressSiteController extends Controller
     public function store(WordpressSiteRequest $request)
     {
         try {
-            $wordpressSite = $this->service->save($request);
+            $this->service->save($request);
 
             return redirect()->route('wordpress-sites.index')
                 ->with('success', 'Wordpress site created successfully!');

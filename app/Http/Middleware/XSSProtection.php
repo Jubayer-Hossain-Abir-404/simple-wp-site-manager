@@ -17,7 +17,7 @@ class XSSProtection
      */
     public function handle(Request $request, \Closure $next)
     {
-        if (!in_array(strtolower($request->method()), ['put', 'post'], true)) {
+        if (!in_array(strtolower($request->method()), ['put', 'post', 'patch'], true)) {
             return $next($request);
         }
 

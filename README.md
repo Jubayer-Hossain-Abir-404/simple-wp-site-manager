@@ -139,7 +139,7 @@ Docker Requirements
 
 Need Docker & Docker Compose Setup
 
-## wordpress-site-management
+## Wordpress-site-management
 
 Factory Seeding
 php artisan db:seed

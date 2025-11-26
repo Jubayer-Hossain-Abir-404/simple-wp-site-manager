@@ -145,8 +145,10 @@ Need Docker & Docker Compose Setup
 
 ## Wordpress-site-management
 
-CRUD Operations
+CRUD Operations (Requires Job Running)
+
 Access WordPress sites management via:
+
 http://localhost:8000/wordpress-sites
 
 Stop Specific Container

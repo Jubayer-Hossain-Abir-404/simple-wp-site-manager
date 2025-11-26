@@ -181,10 +181,9 @@ Virtual Host - Domain-based routing setup
 
 ## Monitoring-system
 
-Bash Monitor Script (Script can be found project root bash file)
-The docker-monitor.sh script
+Bash Monitor Script (Script can be found at project root bash file)
 
-Runs every 5 minutes via cron
+The docker-monitor.sh script runs every 5 minutes via cron
 
 Checks container health status
 
@@ -197,6 +196,7 @@ Logs activities to /var/log/docker-monitor.log
 Create monitor script
 
 sudo nano /usr/local/bin/docker-monitor.sh
+
 Paste the bash script content (from project bash file)
 
 Make executable
@@ -212,15 +212,16 @@ Add: */5 * * * * /usr/local/bin/docker-monitor.sh
 ## Queue-processing
 Run queue worker for background jobs
 
-## DB run background processing
-php artisan queue:work
-
 Job Types
+
 Site deployment operations
 
 Stop container
 
 Delete container
+
+## DB run background processing
+php artisan queue:work
 
 ## Security-notes
 

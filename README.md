@@ -12,6 +12,7 @@ A Laravel application designed to provision, manage, and monitor Dockerized Word
 - [SSH & Docker Logic](#ssh-docker-logic)
 - [Docker Compose Structure](#docker-compose-structure)
 - [Monitoring System](#monitoring-system)
+- [DB Info](#db-info)
 - [Setup Monitoring](#setup-monitoring)
 - [Queue Processing](#queue-processing)
 - [Security Notes](#Security-notes)
@@ -64,20 +65,24 @@ composer install
 # Install Node.js dependencies
 npm install
 
-# Install MySQL dependencies
-
 # Environment setup
 cp .env.example .env
+
 php artisan key:generate
 
-2. Database Configuration
+Database Configuration
 
 # Update .env with database credentials
 DB_CONNECTION=mysql
+
 DB_HOST=127.0.0.1
+
 DB_PORT=3306
+
 DB_DATABASE=wordpress_manager
+
 DB_USERNAME=your_username
+
 DB_PASSWORD=your_password
 
 # Run migrations
@@ -89,7 +94,7 @@ php artisan db:seed
 # Additional
 Can take the project MySQL Zip file. Can Unzip and use this file.
 
-3. Development Build
+# Development Build
 
 # Start Laravel development server
 php artisan serve
@@ -100,17 +105,16 @@ npm run dev
 # Production build
 npm run build
 
-4. DB Info
+## DB-info
 
-'status' (Status column enum info) => [
+Status column enum info
+'status' => [
     'stopped' => 1,
     'deploying' => 2,
     'running' => 3,
     'failed' => 4,
     'stopping' => 5,
 ],
-
-
 
 ## Remote-server-setup
 
@@ -196,6 +200,7 @@ sudo crontab -e
 ## Queue-processing
 Run queue worker for background jobs
 
+## DB run background prcessing
 php artisan queue:work
 
 Job Types

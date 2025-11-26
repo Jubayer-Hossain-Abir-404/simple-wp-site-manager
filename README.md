@@ -70,8 +70,6 @@ cp .env.example .env
 
 php artisan key:generate
 
-Database Configuration
-
 # Update .env with database credentials
 DB_CONNECTION=mysql
 
